@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>アバター着せ替えゲーム</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game-wrapper">
+        
+        <!-- トップステータスバー -->
+        <div class="status-bar">
+            <button class="home-nav-btn" id="global-home-btn">🏠 ホーム</button>
+            <span id="coin-display">💰 コイン: 100</span>
+        </div>
+
+        <!-- アバター＆お部屋表示エリア -->
+        <div class="avatar-container">
+            <div class="avatar-area" id="main-camera-view">
+                <canvas id="avatar-canvas" width="200" height="220" class="layer"></canvas>
+                
+                <!-- キャッチゲーム用 -->
+                <div id="game-catcher-avatar" class="catcher-avatar-hidden">
+                    <img src="images/body.png" class="game-avatar-img">
+                </div>
+                <div id="game-falling-stage" class="falling-stage-hidden"></div>
+
+                <!-- ランゲーム用 -->
+                <div id="game-run-stage" class="run-stage-hidden">
+                    <div id="run-avatar">
+                        <img src="images/body.png" class="game-avatar-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- メインコンテンツエリア -->
+        <main class="content-area">
+            
+            <!-- 【0】ホーム画面 -->
+            <section id="view-home" class="sub-view active">
+                <h2>🏠 マイルームホーム</h2>
+                <p class="portal-desc">のんびりお部屋でお留守番中。どこへ遊びに行く？</p>
+                <div class="menu-list">
+                    <button class="list-btn" id="home-to-closet-btn">👗 クローゼットでお着替えする</button>
+                    <button class="list-btn" id="home-to-room-btn">🛋️ お部屋の模様替えをする</button>
+                    <button class="list-btn" id="home-to-outing-btn">🚗 おでかけマップを開く</button>
+                </div>
+            </section>
+
+            <!-- 【1】クローゼット画面 -->
+            <section id="view-closet" class="sub-view">
+                <h2>👗 クローゼット</h2>
+                <div class="closet-tabs">
+                    <button class="tab-btn active" id="tab-btn-hair">💇 髪型</button>
+                    <button class="tab-btn" id="tab-btn-clothes">👕 お洋服</button>
+                </div>
+                <div class="closet-content">
+                    <div id="closet-pane-hair" class="closet-pane active">
+                        <div class="item-grid" id="closet-hair-group"></div>
+                    </div>
+                    <div id="closet-pane-clothes" class="closet-pane">
+                        <div class="item-grid" id="closet-clothes-group"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 【2】模様替え画面 -->
+            <section id="view-room" class="sub-view">
+                <h2>🛋️ 模様替え</h2>
+                <div class="closet-tabs">
+                    <button class="tab-btn active" id="tab-room-bg">🏞️ 壁紙</button>
+                    <button class="tab-btn" id="tab-room-furn">🪑 家具</button>
+                </div>
+                <div class="closet-content">
+                    <div id="room-pane-bg" class="closet-pane active">
+                        <div class="btn-group">
+                            <button id="btn-bg-pink" class="active">ピンク</button>
+                            <button id="btn-bg-yellow">イエロー</button>
+                            <button id="btn-bg-blue">ブルー</button>
+                        </div>
+                    </div>
+                    <div id="room-pane-furn" class="closet-pane">
+                        <div class="btn-group" id="room-furniture-group"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 【3】クエスト・図鑑メニュー画面 -->
+            <section id="view-menu" class="sub-view">
+                <!-- ここに動的に中身が流し込まれます -->
+            </section>
+
+            <!-- 【4】おでかけ選択画面 -->
+            <section id="view-outing" class="sub-view">
+                <h2>🚗 おでかけマップ</h2>
+                <p class="portal-desc">街へくり出そう！ショップやミニゲームへ移動できます。</p>
+                <div class="menu-list" id="outing-game-list"></div>
+            </section>
+
+            <!-- 【4-A】ショップ：通常店 -->
+            <section id="view-shop-normal" class="sub-view">
+                <div class="view-header">
+                    <button class="back-btn" id="back-shop-btn">◀ 地図に戻る</button>
+                    <h2>🛍️ お洋服・家具屋さん</h2>
+                </div>
+                <div class="shop-grid" id="shop-normal-item-list"></div>
+            </section>
+
+            <!-- 【4-B】ショップ：ガチャ -->
+            <section id="view-shop-gacha" class="sub-view">
+                <div class="view-header">
+                    <button class="back-btn" id="back-gacha-btn">◀ 地図に戻る</button>
+                    <h2>🎰 ガチャショップ</h2>
+                </div>
+                <div class="gacha-area">
+                    <div class="gacha-machine" id="gacha-machine-egg">🎁</div>
+                    <div class="gacha-capsule-pop" id="gacha-capsule-ball">🔮</div>
+                    <button class="gacha-trigger-btn" id="gacha-start-btn">ガチャを回す (💰30)</button>
+                    <div id="gacha-result" class="gacha-result-text">何が出るかな？</div>
+                </div>
+            </section>
+
+            <!-- 【4-C】各種ミニゲーム用セクション一式 -->
+            <section id="view-game-tapper" class="sub-view">
+                <div class="view-header"><button class="back-btn" id="back-tapper-btn">◀ 地図に戻る</button><h2>🕹️ コインタッパー</h2></div>
+                <div class="game-center-area">
+                    <div class="timer-text" id="tapper-timer">残り時間: --秒</div>
+                    <div class="score-text" id="tapper-score">獲得: 0枚</div>
+                    <button class="game-action-btn" id="tapper-start-btn">ゲームスタート</button>
+                    <button class="game-tap-btn" id="tapper-tap-btn" disabled>TAP!!</button>
+                </div>
+            </section>
+
+            <section id="view-game-catcher" class="sub-view">
+                <div class="view-header"><button class="back-btn" id="back-catcher-btn">◀ 地図に戻る</button><h2>🧺 落とし物キャッチ</h2></div>
+                <div class="game-center-area">
+                    <div class="timer-text" id="catcher-timer">残り時間: --秒</div>
+                    <div class="score-text" id="catcher-score">獲得: 0枚</div>
+                    <button class="game-action-btn" id="catcher-start-btn">ゲームスタート</button>
+                    <div class="move-ctrl-group">
+                        <button class="move-btn-ctrl" id="move-left-btn" disabled>◀ 左へ</button>
+                        <button class="move-btn-ctrl" id="move-right-btn" disabled>右へ ▶</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-game-number" class="sub-view">
+                <div class="view-header"><button class="back-btn" id="back-number-btn">◀ 地図に戻る</button><h2>🔢 ナンバータップ</h2></div>
+                <div class="game-center-area">
+                    <p>1 から順番に素早くタップしてね！</p>
+                    <div class="timer-text" id="num-timer">残り時間: --秒</div>
+                    <div class="score-text" id="num-score">獲得: 0枚</div>
+                    <button class="game-action-btn" id="num-start-btn">ゲームスタート</button>
+                    <div class="number-grid-area" id="number-tap-grid"></div>
+                </div>
+            </section>
+
+            <section id="view-game-runner" class="sub-view">
+                <div class="view-header"><button class="back-btn" id="back-runner-btn">◀ 地図に戻る</button><h2>🏃 ハイパーランナー</h2></div>
+                <div class="game-center-area">
+                    <p>岩をジャンプでよけて、コイン袋（💰）を掴め！</p>
+                    <div class="timer-text" id="run-speed-text">スピード: 1.0x</div>
+                    <div class="score-text" id="runner-score">獲得: 0枚</div>
+                    <button class="game-action-btn" id="runner-start-btn">ゲームスタート</button>
+                    <button class="game-jump-btn" id="runner-jump-btn" disabled>JUMP!!</button>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- 下部固定メニュー -->
+        <nav class="bottom-menu">
+            <button class="menu-btn active" id="main-menu-home">🏠 ホーム</button>
+            <button class="menu-btn" id="main-menu-closet">👗 クローゼット</button>
+            <button class="menu-btn" id="main-menu-room">🛋️ 模様替え</button>
+            <button class="menu-btn" id="main-menu-menu">🏆 クエスト</button>
+            <button class="menu-btn" id="main-menu-outing">🚗 おでかけ</button>
+        </nav>
+
+        <!-- 💡 【修正箇所】メインエリア（main）の上書きに巻き込まれないよう、ゲーム wrapper の直前に引っ越し -->
+        <div id="info-popup" class="popup-overlay">
+            <div class="popup-content">
+                <h3 id="popup-title">アイテム名</h3>
+                <p id="popup-desc">アイテムの説明文がここに入ります。</p>
+                <button class="popup-close-btn" id="popup-close-btn">閉じる</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

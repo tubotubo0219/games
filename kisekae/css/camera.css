@@ -1,0 +1,37 @@
+.avatar-container {
+    width: 100%;
+    padding: 0; /* 👈 隙間を無くすために余白をゼロに */
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #ddd;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.avatar-area {
+    position: relative;
+    width: 100%;    /* 👈 画面の横幅いっぱいに広げる */
+    height: 320px;  /* 👈 縦幅も広げてダイナミックな大画面に */
+    background-color: #e3faff;
+    overflow: hidden;
+}
+
+.layer {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+}
+
+/* 🔍 自由ズーム・カメラワークをなめらかにする設定 */
+#avatar-canvas {
+    touch-action: none;
+    transform-origin: center center; 
+    transition: transform 0.25s ease-out;
+}
+
+#main-camera-view {
+    touch-action: none;
+}
+
+.falling-stage-hidden, .run-stage-hidden { display: none; }
+.falling-stage-visible, .run-stage-visible { display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 15; pointer-events: none; }
