@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 tubotubo0210 ゲームポータル</title>
+    <style>
+        /* 既存のメインCSSと雰囲気を合わせた洗練されたデザイン */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f6fa;
+            color: #2c3e50;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 10px;
+        }
+        header h1 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+        }
+        header p {
+            color: #7f8c8d;
+            margin: 0;
+        }
+        /* メニューカードのレスポンシブグリッド配置 */
+        .portal-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            max-width: 500px;
+        }
+        /* 押しやすいオシャレなゲーム選択カード */
+        .game-card {
+            background-color: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
+        }
+        /* マウスを乗せたとき、スマホでタップしたときのアニメーション */
+        .game-card:hover, .game-card:active {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .card-sudoku:hover { border-color: #1abc9c; }
+        .card-kisekae:hover { border-color: #e84393; }
+
+        .game-icon {
+            font-size: 2.5rem;
+            min-width: 50px;
+            text-align: center;
+        }
+        .game-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .game-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .game-desc {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+        footer {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #bdc3c7;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎮 tubotubo0210 GAMES</h1>
+        <p>AIと共同開発した自作のゲームポータルサイトです。</p>
+    </header>
+
+    <div class="portal-container">
+        <!-- 1. パズルポータルへの案内カード（フォルダ名が異なる場合は各自書き換えてください） -->
+        <a href="puzzle/index.html" class="game-card card-sudoku">
+            <div class="game-icon">🧩</div>
+            <div class="game-info">
+                <div class="game-title">マルチパズルポータル</div>
+                <div class="game-desc">数独、ピクロス、マージスイカ、グラデーション、スライドなど全7種の本格パズル。</div>
+            </div>
+        </a>
+
+        <!-- 2. 着せ替えゲームへの案内カード -->
+        <a href="kisekae/index.html" class="game-card card-kisekae">
+            <div class="game-icon">👗</div>
+            <div class="game-info">
+                <div class="game-title">キャラクター着せ替え</div>
+                <div class="game-desc">かわいい衣装やアイテムを自由に選んで、自分だけのキャラクターを作ろう。</div>
+            </div>
+        </a>
+    </div>
+
+    <footer>
+        &copy; 2026 tubotubo0210. All Rights Reserved.
+    </footer>
+
+</body>
+</html>
