@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マルチ・パズル・ゲームズ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>🧩 パズルポータル</h1>
+        <!-- ★ボタンからプルダウンメニュー形式へスマートに変更 -->
+        <div id="portal-navigation">
+            <label for="game-selector" style="font-size: 14px; font-weight: bold; margin-right: 5px;">遊ぶゲームを選択：</label>
+            <select id="game-selector" onchange="handleGameSelect()" style="padding: 8px 12px; font-size: 15px; font-weight: bold; border-radius: 6px; border: 2px solid #1abc9c; background-color: #34495e; color: white; cursor: pointer; outline: none;">
+                <option value="sudoku">🔢 数独 (Sudoku)</option>
+                <option value="sliding">🧩 スライドパズル</option>
+                <option value="memory">🃏 神経衰弱 (ペアマッチ)</option>
+                <option value="nikaku">🀄 2角パズル (二角取り)</option>
+                <option value="gradient">🎨 グラデーションパズル</option>
+                <option value="suika">🍉 マージスイカ</option>
+                <option value="picross">🎨 ピクロス (イラストロジック)</option>
+
+            </select>
+        </div>
+    </header>
+
+    <main>
+        <!-- 数独セクション -->
+        <section id="sudoku" class="game-section active">
+            <h2>数独 (Sudoku)</h2>
+            <p class="desc">モードを選んでプレイしてください。固定ステージはクリア履歴が保存されます。</p>
+            
+            <!-- 1. モード・難易度選択バー -->
+            <div class="sudoku-top-bar">
+                <select id="sudoku-mode-select" onchange="switchSudokuMode()" style="padding: 6px 10px; font-size: 14px; border-radius: 5px; border: 2px solid #34495e;">
+                    <option value="fixed">固定ステージ（全300問）</option>
+                    <option value="auto">無限自動生成モード</option>
+                </select>
+
+                <select id="sudoku-level-select" onchange="changeSudokuLevel()" style="padding: 6px 10px; font-size: 14px; border-radius: 5px; border: 2px solid #34495e;">
+                    <option value="0">初級 (Easy)</option>
+                    <option value="1">中級 (Medium)</option>
+                    <option value="2">上級 (Hard)</option>
+                </select>
+                
+                <button class="action-btn reset-top-btn" id="sudoku-back-btn" onclick="backToStageSelect()" style="display:none; background-color:#7f8c8d;">ステージ一覧へ</button>
+                <button class="action-btn reset-top-btn" id="sudoku-reset-btn" onclick="confirmResetSudoku()" style="display:none;">リセット</button>
+            </div>
+
+            <!-- 2. 【新設】ステージ選択画面 (横10×縦10のグリッド) -->
+            <div id="sudoku-stage-outer">
+                <h3 id="stage-title">初級 ステージ選択</h3>
+                <div id="sudoku-stage-select" class="stage-grid-10x10"></div>
+            </div>
+
+            <!-- 3. ゲームプレイ画面（初期状態は非表示、ステージ選択後にJSで表示） -->
+            <div id="sudoku-game-area" style="display: none; margin-top: 20px;">
+                <div id="sudoku-status" class="status-msg" style="margin-bottom: 15px;">待機中</div>
+                <div id="sudoku-grid" class="grid-9x9"></div>
+                
+                <!-- 数字入力ボタン群 -->
+                <div id="sudoku-controls" class="num-pad">
+                    <button class="num-btn" onclick="pressNumButton(1)">1</button>
+                    <button class="num-btn" onclick="pressNumButton(2)">2</button>
+                    <button class="num-btn" onclick="pressNumButton(3)">3</button>
+                    <button class="num-btn" onclick="pressNumButton(4)">4</button>
+                    <button class="num-btn" onclick="pressNumButton(5)">5</button>
+                    <button class="num-btn" onclick="pressNumButton(6)">6</button>
+                    <button class="num-btn" onclick="pressNumButton(7)">7</button>
+                    <button class="num-btn" onclick="pressNumButton(8)">8</button>
+                    <button class="num-btn" onclick="pressNumButton(9)">9</button>
+                    <button class="num-btn toggle-btn" id="memo-btn" onclick="toggleMemoMode()">メモ: オフ</button>
+                    <button class="num-btn erase-btn" onclick="pressNumButton(0)">消去</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- スライドパズルセクション -->
+        <section id="sliding" class="game-section">
+            <h2>スライドパズル</h2>
+            <p class="desc">パネルをクリックしてスライドさせ、左上から順番に数字を並べてください。</p>
+            
+            <!-- サイズ選択メニューを追加 -->
+            <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 15px;">
+                <select id="sliding-size-select" onchange="changeSlidingSize()" style="padding: 6px 10px; font-size: 14px; border-radius: 5px; border: 2px solid #34495e;">
+                    <option value="3">3 x 3 (8パズル)</option>
+                    <option value="4">4 x 4 (15パズル)</option>
+                    <option value="5">5 x 5 (24パズル)</option>
+                </select>
+                <button class="action-btn" onclick="initSliding()" style="margin-top: 0; padding: 6px 15px; font-size: 14px;">リセット</button>
+            </div>
+
+            <!-- 動的にマス数が変わるグリッド -->
+            <div id="sliding-grid"></div>
+        </section>
+
+        <!-- 神経衰弱セクション -->
+        <section id="memory" class="game-section">
+            <h2>神経衰弱 (ペアマッチ)</h2>
+            <p class="desc">カードをめくって、同じ絵柄のペアを見つけてください。</p>
+            
+            <!-- コントロールバー -->
+            <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+                <select id="memory-size-select" onchange="changeMemoryConfig()" style="padding: 6px 10px; font-size: 14px; border-radius: 5px; border: 2px solid #34495e;">
+                    <option value="16">4 x 4 (16枚・8ペア)</option>
+                    <option value="20">4 x 5 (20枚・10ペア)</option>
+                    <option value="24">4 x 6 (24枚・12ペア)</option> <!-- ★追加 -->
+                    <option value="30">5 x 6 (30枚・15ペア)</option> <!-- ★追加 -->
+                    <option value="36">6 x 6 (36枚・18ペア)</option>
+                </select>
+                
+                <select id="memory-mode-select" onchange="changeMemoryConfig()" style="padding: 6px 10px; font-size: 14px; border-radius: 5px; border: 2px solid #34495e;">
+                    <option value="normal">通常モード</option>
+                    <option value="look">4秒暗記モード</option>
+                </select>
+                
+                <!-- 暗記モード専用のスタートボタン -->
+                <button class="action-btn" id="memory-start-btn" onclick="pressStartMemory()" style="margin-top: 0; padding: 6px 15px; font-size: 14px; background-color: #e67e22; display: none;">暗記スタート</button>
+                <button class="action-btn" onclick="initMemory()" style="margin-top: 0; padding: 6px 15px; font-size: 14px;">リセット</button>
+            </div>
+
+            <!-- 現在のゲーム状況とベストスコア表示 -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px;">
+                <div id="memory-status" class="status-msg" style="min-width: 280px;">ミス: 0回 / タイム: 0秒</div>
+                <div id="memory-best-score" style="font-size: 12px; color: #27ae60; font-weight: bold;">自己ベスト: まだ記録がありません</div>
+            </div>
+
+            <!-- カードが並ぶグリッド -->
+            <div id="memory-grid"></div>
+        </section>
+
+        <!-- 2角パズルセクション -->
+        <section id="nikaku" class="game-section">
+            <h2>2角パズル (二角取り)</h2>
+            <p class="desc">同じ絵柄のカードを、2回以内の右折・左折で結べるペアを選んで消してください。</p>
+            
+            <!-- コントロールバー -->
+            <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+                <select id="nikaku-size-select" onchange="changeNikakuSize()" style="padding: 6px 10px; font-size: 14px; border-radius: 5px; border: 2px solid #34495e;">
+                    <option value="easy">初級 (4 x 6)</option>
+                    <option value="normal">中級 (6 x 8)</option>
+                    <option value="hard">上級 (8 x 10)</option> <!-- ★追加 -->
+                </select>
+                
+                <!-- シャッフルは残り1回 -->
+                <button class="action-btn" id="nikaku-shuffle-btn" onclick="pressNikakuShuffle()" style="margin-top: 0; padding: 6px 15px; font-size: 14px; background-color: #2ecc71;">シャッフル (残り1回)</button>
+                <button class="action-btn" onclick="initNikaku()" style="margin-top: 0; padding: 6px 15px; font-size: 14px;">リセット</button>
+            </div>
+
+            <!-- ★状況メーターと自己ベストスコアボード -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px;">
+                <div id="nikaku-status" class="status-msg" style="min-width: 240px;">タイム: 0秒</div>
+                <div style="font-size: 12px; color: #27ae60; font-weight: bold; text-align: center; line-height: 1.6;">
+                    <div id="nikaku-best-noshuffle">🏆 記録(シャッフルなし): まだありません</div>
+                    <div id="nikaku-best-shuffle">🏅 記録(シャッフルあり): まだありません</div>
+                </div>
+            </div>
+
+            <!-- 2角パズルの盤面 -->
+            <div id="nikaku-grid" style="position: relative;"></div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- グラデーションパズルセクション (数独完全互換レイアウト) -->
+        <!-- ============================================================= -->
+        <section id="gradient" class="game-section">
+            <h2>グラデーションパズル</h2>
+            <p class="desc">四隅の固定タイル（•）をヒントに、色が綺麗に繋がるようにタイルを並び替えてください。</p>
+            
+            <!-- 1. モード・難易度選択バー（数独と全く同じ構造） -->
+            <div class="sudoku-top-bar">
+                <select id="gradient-mode-select" onchange="changeGradientMode()" style="padding: 6px 10px; font-size: 14px; border-radius: 5px; border: 2px solid #34495e;">
+                    <option value="fixed">固定ステージ（全600問）</option>
+                    <option value="auto">無限自動生成モード</option>
+                </select>
+
+                <select id="gradient-size-select" onchange="changeGradientConfig()" style="padding: 6px 10px; font-size: 14px; border-radius: 5px; border: 2px solid #34495e;">
+                    <option value="3">初級 (3 x 3)</option>
+                    <option value="4">中級 (4 x 4)</option>
+                    <option value="5">上級 (5 x 5)</option>
+                    <option value="6">超級 (6 x 6)</option>
+                    <option value="7">地獄 (7 x 7)</option>
+                    <option value="8">超地獄 (8 x 8)</option>
+                </select>
+                
+                <!-- 上部コントロールボタン（JSから表示・非表示を制御） -->
+                <button class="action-btn reset-top-btn" id="gradient-back-btn" onclick="backToGradStageSelect()" style="display:none; background-color:#7f8c8d;">ステージ一覧へ</button>
+                <button class="action-btn reset-top-btn" id="gradient-reset-btn" onclick="confirmResetGradient()" style="display:none;">リセット</button>
+            </div>
+
+            <!-- 2. ステージ選択画面 (横10×縦10のグリッド - 数独と同一形式) -->
+            <div id="gradient-stage-outer">
+                <h3 id="gradient-stage-title">初級 ステージ選択</h3>
+                <div id="gradient-stage-select" class="stage-grid-10x10"></div>
+            </div>
+
+            <!-- 3. ゲームプレイ画面（初期状態は非表示、ステージ選択後にJSで表示） -->
+            <div id="gradient-game-area" style="display: none; margin-top: 20px; width: 100%;">
+                <!-- 状況メーターと自己ベストスコアボード -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px;">
+                    <div id="gradient-status" class="status-msg" style="min-width: 260px;">手数: 0回 / タイム: 0秒</div>
+                    <div style="font-size: 12px; color: #27ae60; font-weight: bold; text-align: center; line-height: 1.6;">
+                        <div id="gradient-best-moves">🏆 ベスト手数: まだ記録がありません</div>
+                        <div id="gradient-best-time">⏱️ 最速タイム: まだ記録がありません</div>
+                    </div>
+                </div>
+                
+                <!-- パズル本体のカラーグリッド -->
+                <div id="gradient-grid"></div>
+            </div>
+        </section>
+
+        <!-- スイカゲームセクション -->
+        <section id="suika" class="game-section">
+            <h2>マージスイカ</h2>
+            <p class="desc">同じフルーツをぶつけて大きく進化させよう！箱からあふれたらゲームオーバー。</p>
+            
+            <!-- コントロールバー -->
+            <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+                <button class="action-btn" onclick="initSuika()" style="margin-top: 0; padding: 6px 15px; font-size: 14px;">最初からプレイ</button>
+            </div>
+
+            <!-- スコア表示ボード -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px;">
+                <div id="suika-status" class="status-msg" style="min-width: 260px;">スコア: 0 点</div>
+                <div style="font-size: 12px; color: #27ae60; font-weight: bold; text-align: center; line-height: 1.6;">
+                    <div id="suika-best-score">🏆 ハイスコア: まだ記録がありません</div>
+                    <div id="suika-next-fruit" style="color: #e67e22;">🎁 つぎのフルーツ: 待機中</div>
+                </div>
+            </div>
+
+            <!-- ゲーム画面を描画するキャンバス（外枠で包んで中央配置） -->
+            <div id="suika-canvas-container">
+                <canvas id="suika-canvas" width="320" height="400"></canvas>
+            </div>
+        </section>
+
+        <!-- ピクロスセクション -->
+        <section id="picross" class="game-section">
+            <h2>ピクロス</h2>
+            <p class="desc">左側と上部の数字をヒントに、マスを正しく塗りつぶしてイラストを完成させてください。</p>
+            
+            <!-- 1. モード・難易度選択バー -->
+            <div class="sudoku-top-bar">
+                <select id="picross-mode-select" onchange="changePicrossMode()" style="padding: 6px 10px; font-size: 14px; border-radius: 5px; border: 2px solid #34495e;">
+                    <option value="fixed">固定ステージ（イラスト問題）</option>
+                </select>
+
+                <select id="picross-size-select" onchange="changePicrossConfig()" style="padding: 6px 10px; font-size: 14px; border-radius: 5px; border: 2px solid #34495e;">
+                    <option value="0">初級 (5 x 5)</option>   <!-- valueをインデックス番号の 0 に修正 -->
+                    <option value="1">中級 (10 x 10)</option>  <!-- valueをインデックス番号の 1 に修正 -->
+                </select>
+                
+                <button class="action-btn reset-top-btn" id="picross-back-btn" onclick="backToPicrossStageSelect()" style="display:none; background-color:#7f8c8d;">ステージ一覧へ</button>
+                <button class="action-btn reset-top-btn" id="picross-reset-btn" onclick="confirmResetPicross()" style="display:none;">リセット</button>
+            </div>
+
+            <!-- 2. ステージ選択画面 (横10×縦10のグリッド) -->
+            <div id="picross-stage-outer">
+                <h3 id="picross-stage-title">初級 ステージ選択</h3>
+                <div id="picross-stage-select" class="stage-grid-10x10"></div>
+            </div>
+
+            <!-- 3. ゲームプレイ画面（初期状態は非表示） -->
+            <div id="picross-game-area" style="display: none; margin-top: 20px; width: 100%;">
+                <div id="picross-status" class="status-msg" style="margin-bottom: 15px;">待機中</div>
+                
+                <!-- ピクロス盤面（ヒント枠と本体を包むコンテナ） -->
+                <div id="picross-board-container"></div>
+                
+                <!-- 入力モード切り替えボタン（塗る・バツ・消去） -->
+                <div class="num-pad" style="max-width: 280px; margin-top: 20px;">
+                    <button class="num-btn toggle-btn" id="picross-pen-btn" onclick="switchPicrossTool('fill')" style="width: 85px;">塗り (■)</button>
+                    <button class="num-btn toggle-btn" id="picross-x-btn" onclick="switchPicrossTool('batsu')" style="width: 85px;">バツ (×)</button>
+                </div>
+            </div>
+        </section>
+
+
+    </main>
+
+    <!-- 1. まず共通データ保存レイヤーを読み込む -->
+    <script src="storage.js"></script>
+
+    <!-- 2. 各パズルの個別ロジックを読み込む -->
+    <script src="sudoku.js"></script>
+    <script src="sliding.js"></script>
+    <script src="memory.js"></script>
+    <script src="nikaku.js"></script>
+    <script src="gradient.js"></script>
+    <script src="suika.js"></script>
+    <script src="picross.js"></script>
+
+    <!-- 3. 最後に全体を制御・初期化するメインファイルを読み込む -->
+    <script src="main.js"></script>
+</body>
+</html>
