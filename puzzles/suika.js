@@ -34,11 +34,7 @@ const SuikaGame = {
 
     init() {
         this.cacheDOM();
-        // 👇【重要】イベント登録がまだ「一度も行われていない時だけ」実行する
-        if (!this.isEventsBound) {
-            this.bindEvents();
-            this.isEventsBound = true; // 登録完了フラグを立てて二度と通さない
-        }
+        this.bindEvents();
         this.loadHighScore();
         this.resetGame();
     },
@@ -57,10 +53,10 @@ const SuikaGame = {
         // PC用のマウスイベント
         this.canvas.addEventListener("mousedown", (e) => this.pointerStart(e.offsetX));
         this.canvas.addEventListener("mousemove", (e) => this.pointerMove(e.offsetX));
-        this.canvas.addEventListener("mouseup", () => this.pointerEnd());
+        this.canvas.addEventListener("mouseup", () => this.pointerEnd("m"));
 
         window.addEventListener("mouseup", () => {
-            if (this.isPointerDown) this.pointerEnd();
+            if (this.isPointerDown) this.pointerEnd("w");
         });
 
         // スマホ用のタッチイベント（TouchListオブジェクトに合わせた正確な座標抽出）
@@ -88,7 +84,7 @@ const SuikaGame = {
         this.canvas.addEventListener("touchend", (e) => {
             // 画面から離れた指を検知してフルーツを落とす
             if (!e.changedTouches || e.changedTouches.length === 0) return;
-            this.pointerEnd();
+            this.pointerEnd("t");
         }, { passive: true });
 
     },
@@ -132,8 +128,10 @@ const SuikaGame = {
         this.currentX = Math.max(r, Math.min(320 - r, relaxedX));
     },
 
-    pointerEnd() {
+    pointerEnd(d) {
         if (this.isGameOver || !this.isPointerDown) return;
+        document.getElementById("debug-area").innerHTML = document.getElementById("debug-area").innerHTML + d;
+        console.log(document.getElementById("debug-area").innerHTML);
         this.isPointerDown = false;
         this.dropFruit();
     },
