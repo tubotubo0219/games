@@ -59,33 +59,37 @@ const SuikaGame = {
             if (this.isPointerDown) this.pointerEnd("w");
         });
 
-        // スマホ用のタッチイベント（TouchListオブジェクトに合わせた正確な座標抽出）
-        // スマホ用のタッチイベント（2個同時落ちを100%防止する鉄壁版）
+        // スマホ用のタッチイベント（マウスイベントの2重暴発を完全に相殺する仕様）
         this.canvas.addEventListener("touchstart", (e) => {
-            // 今まさに新しく画面に触れた指（changedTouchesの0番目）だけを正確に取得
+            // 👇【重要】ブラウザの「スクロール」や「マウスイベントの自動偽装」を完全にストップ
+            e.preventDefault(); 
+
             if (!e.changedTouches || e.changedTouches.length === 0) return;
             const touch = e.changedTouches[0]; 
 
             const rect = this.canvas.getBoundingClientRect();
             const touchX = (touch.clientX - rect.left) * (this.canvas.width / rect.width);
             this.pointerStart(touchX);
-        }, { passive: true });
+        }, { passive: false }); // ⚠️ preventDefaultを使うため、passiveは「false」に設定します
 
         this.canvas.addEventListener("touchmove", (e) => {
-            // 動いている特定の指だけを追従
+            e.preventDefault(); // ドラッグ中の画面引っ張りを防止
+
             if (!e.changedTouches || e.changedTouches.length === 0) return;
             const touch = e.changedTouches[0];
 
             const rect = this.canvas.getBoundingClientRect();
             const touchX = (touch.clientX - rect.left) * (this.canvas.width / rect.width);
             this.pointerMove(touchX);
-        }, { passive: true });
+        }, { passive: false });
 
         this.canvas.addEventListener("touchend", (e) => {
-            // 画面から離れた指を検知してフルーツを落とす
+            e.preventDefault(); // 指を離したときのマウスイベント偽装をここで完全遮断！
+
             if (!e.changedTouches || e.changedTouches.length === 0) return;
             this.pointerEnd("t");
-        }, { passive: true });
+        }, { passive: false });
+
 
     },
 
