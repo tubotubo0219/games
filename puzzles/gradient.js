@@ -389,7 +389,7 @@ function renderGradStageSelect() {
     let clearedStages = getClearedStages('gradient_cleared_stages');
     for (let i = start; i <= start + 99; i++) {
         const btn = document.createElement('button');
-        btn.className = 'stage-btn' + (clearedStages.includes(i) ? ' cleared' : '');
+        btn.className = 'stage-btn-common' + (clearedStages.includes(i) ? ' cleared' : '');
         btn.innerText = i - (currentGradLevelIndex * 100);
         btn.addEventListener('click', () => { 
             currentGradStageNumber = i; 

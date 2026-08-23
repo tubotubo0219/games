@@ -68,7 +68,7 @@
             </div>
 
             <!-- 3. ゲームプレイ画面（初期状態は非表示、ステージ選択後にJSで表示） -->
-            <div id="sudoku-game-area" style="display: none; margin-top: 20px;">
+            <div id="sudoku-game-area" style="display: none;">
                 <div id="sudoku-status" class="status-msg" style="margin-bottom: 15px;">待機中</div>
                 <div id="sudoku-grid" class="grid-9x9"></div>
                 
@@ -137,13 +137,13 @@
                 
                 <!-- 暗記モード専用のスタートボタン -->
                 <button class="action-btn" id="memory-start-btn" onclick="pressStartMemory()" style="margin-top: 0; padding: 6px 15px; font-size: 14px; background-color: #e67e22; display: none;">暗記スタート</button>
+                <div id="memory-best-score" style="font-size: 12px; color: #27ae60; font-weight: bold;">自己ベスト: まだ記録がありません</div>
                 <button class="action-btn" onclick="initMemory()" style="margin-top: 0; padding: 6px 15px; font-size: 14px;">リセット</button>
             </div>
 
             <!-- 現在のゲーム状況とベストスコア表示 -->
             <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px;">
                 <div id="memory-status" class="status-msg" style="min-width: 280px;">ミス: 0回 / タイム: 0秒</div>
-                <div id="memory-best-score" style="font-size: 12px; color: #27ae60; font-weight: bold;">自己ベスト: まだ記録がありません</div>
             </div>
 
             <!-- カードが並ぶグリッド -->
@@ -168,17 +168,18 @@
                 </select>
                 
                 <!-- シャッフルは残り1回 -->
-                <button class="action-btn" id="nikaku-shuffle-btn" onclick="pressNikakuShuffle()" style="margin-top: 0; padding: 6px 15px; font-size: 14px; background-color: #2ecc71;">シャッフル (残り1回)</button>
-                <button class="action-btn" onclick="initNikaku()" style="margin-top: 0; padding: 6px 15px; font-size: 14px;">リセット</button>
-            </div>
-
-            <!-- ★状況メーターと自己ベストスコアボード -->
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px;">
-                <div id="nikaku-status" class="status-msg" style="min-width: 240px;">タイム: 0秒</div>
+                <button class="action-btn" id="nikaku-shuffle-btn" onclick="pressNikakuShuffle()" style="margin-top: 0; padding: 6px 15px; font-size: 14px; background-color: #2ecc71;">シャッフル (1/1)</button>
+                <!-- 自己ベストスコアボード ここに移動-->
                 <div style="font-size: 12px; color: #27ae60; font-weight: bold; text-align: center; line-height: 1.6;">
                     <div id="nikaku-best-noshuffle">🏆 記録(シャッフルなし): まだありません</div>
                     <div id="nikaku-best-shuffle">🏅 記録(シャッフルあり): まだありません</div>
                 </div>
+                <button class="action-btn" onclick="initNikaku()" style="margin-top: 0; padding: 6px 15px; font-size: 14px;">リセット</button>
+            </div>
+
+            <!-- ★状況メーター -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px;">
+                <div id="nikaku-status" class="status-msg" style="min-width: 240px;">タイム: 0秒</div>
             </div>
 
             <!-- 2角パズルの盤面 -->
@@ -215,14 +216,14 @@
                 <button class="action-btn reset-top-btn" id="gradient-reset-btn" onclick="confirmResetGradient()" style="display:none;">リセット</button>
             </div>
 
-            <!-- 2. ステージ選択画面 (横10×縦10のグリッド - 数独と同一形式) -->
+            <!-- 2. ステージ選択画面 (横5×縦5のグリッド - 数独と同一形式) -->
             <div id="gradient-stage-outer">
                 <h3 id="gradient-stage-title" class="stage-title">初級 ステージ選択</h3>
                 <div id="gradient-stage-select" class="stage-grid-5x5-common"></div>
             </div>
 
             <!-- 3. ゲームプレイ画面（初期状態は非表示、ステージ選択後にJSで表示） -->
-            <div id="gradient-game-area" style="display: none; margin-top: 20px; width: 100%;">
+            <div id="gradient-game-area" style="display: none; width: 100%;">
                 <!-- 状況メーターと自己ベストスコアボード -->
                 <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 15px;">
                     <div id="gradient-status" class="status-msg" style="min-width: 260px;">手数: 0回 / タイム: 0秒</div>
@@ -306,7 +307,7 @@
             </div>
 
             <!-- 3. ゲームプレイ画面（初期状態は非表示） -->
-            <div id="picross-game-area" style="display: none; margin-top: 20px; width: 100%;">
+            <div id="picross-game-area" style="display: none; width: 100%;">
                 <div id="picross-status" class="status-msg" style="margin-bottom: 15px;">待機中</div>
                 
                 <!-- ピクロス盤面（ヒント枠と本体を包むコンテナ） -->

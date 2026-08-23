@@ -53,10 +53,10 @@ const SuikaGame = {
         // PC用のマウスイベント
         this.canvas.addEventListener("mousedown", (e) => this.pointerStart(e.offsetX));
         this.canvas.addEventListener("mousemove", (e) => this.pointerMove(e.offsetX));
-        this.canvas.addEventListener("mouseup", () => this.pointerEnd("m"));
+        this.canvas.addEventListener("mouseup", () => this.pointerEnd());
 
         window.addEventListener("mouseup", () => {
-            if (this.isPointerDown) this.pointerEnd("w");
+            if (this.isPointerDown) this.pointerEnd();
         });
 
         // スマホ用のタッチイベント（マウスイベントの2重暴発を完全に相殺する仕様）
@@ -87,7 +87,7 @@ const SuikaGame = {
             e.preventDefault(); // 指を離したときのマウスイベント偽装をここで完全遮断！
 
             if (!e.changedTouches || e.changedTouches.length === 0) return;
-            this.pointerEnd("t");
+            this.pointerEnd();
         }, { passive: false });
 
 
@@ -134,8 +134,6 @@ const SuikaGame = {
 
     pointerEnd(d) {
         if (this.isGameOver || !this.isPointerDown) return;
-        document.getElementById("debug-area").innerHTML = document.getElementById("debug-area").innerHTML + d;
-        console.log(document.getElementById("debug-area").innerHTML);
         this.isPointerDown = false;
         this.dropFruit();
     },
