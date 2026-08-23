@@ -1,0 +1,63 @@
+#picross-board-container {
+    display: grid;
+    margin: 0 auto;
+    background-color: #34495e;
+    padding: 6px;
+    border-radius: 8px;
+    border: 3px solid #2c3e50;
+    width: 100%;
+    max-width: 440px;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+.picross-cell {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #ffffff;
+    border: 1px solid #bdc3c7;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #e74c3c;
+}
+
+.picross-cell.filled {
+    background-color: #2c3e50 !important;
+}
+
+.picross-cell.thick-right { border-right: 2px solid #2c3e50; }
+.picross-cell.thick-bottom { border-bottom: 2px solid #2c3e50; }
+
+.picross-hint-cell {
+    background-color: #ecf0f1;
+    color: #2c3e50;
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border: 1px solid #dcdde1;
+    box-sizing: border-box;
+}
+
+.picross-hint-cell.row-hint {
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-right: 4px;
+    gap: 5px;
+}
+.picross-hint-cell.col-hint {
+    justify-content: flex-end;
+    padding-bottom: 4px;
+}
+.picross-hint-cell.corner {
+    background-color: #bdc3c7;
+    border: 1px solid #2c3e50;
+}

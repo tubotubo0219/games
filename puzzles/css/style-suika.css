@@ -1,0 +1,24 @@
+/* 🔄 パズル共通で使い回せるレスポンシブCanvasコンテナ */
+.canvas-portal-container {
+    width: 100%;
+    max-width: 320px;
+    background-color: #333;
+    border: 4px solid #34495e;
+    border-radius: 8px;
+    box-sizing: border-box;
+    overflow: hidden;
+    margin: 0 auto;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    /* スマホでの画面スクロール・引っ張りをロック */
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.canvas-portal-container canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    background-color: #f7f1e3;
+    cursor: crosshair;
+}
