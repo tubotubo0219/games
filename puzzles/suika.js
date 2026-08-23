@@ -34,7 +34,11 @@ const SuikaGame = {
 
     init() {
         this.cacheDOM();
-        this.bindEvents();
+        // 👇【重要】イベント登録がまだ「一度も行われていない時だけ」実行する
+        if (!this.isEventsBound) {
+            this.bindEvents();
+            this.isEventsBound = true; // 登録完了フラグを立てて二度と通さない
+        }
         this.loadHighScore();
         this.resetGame();
     },
